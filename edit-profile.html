@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>修改资料</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .form-box { max-width:400px; margin:60px auto; background:white; padding:30px; border-radius:12px; }
+    .form-item { margin-bottom:18px; }
+    .form-item label { display:block; margin-bottom:6px; font-size:14px; }
+    .form-item input { width:100%; padding:10px; border:1px solid #ddd; border-radius:6px; }
+    .save-btn { width:100%; background:#ff5722; color:white; padding:11px; border:none; border-radius:6px; cursor:pointer; }
+    .back-btn { position:absolute; top:20px; left:20px; padding:8px 16px; background:#f1f1f1; border:none; border-radius:6px; cursor:pointer; }
+  </style>
+</head>
+<body>
+
+<button class="back-btn" onclick="location.href='personal.html'">← 返回</button>
+
+<div class="form-box">
+  <h2 style="text-align:center; color:#ff5722; margin-bottom:24px;">修改个人资料</h2>
+  <div class="form-item">
+    <label>昵称</label>
+    <input type="text" value="小明同学">
+  </div>
+  <div class="form-item">
+    <label>学号</label>
+    <input type="text" value="2025001">
+  </div>
+  <div class="form-item">
+    <label>每日热量目标</label>
+    <input type="number" value="2000">
+  </div>
+  <button class="save-btn" onclick="alert('资料已保存！'); location.href='personal.html';">保存修改</button>
+</div>
+
+</body>
+</html>

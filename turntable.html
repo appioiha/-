@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>今天吃啥 · 转盘</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .turntable-box { text-align:center; margin:50px auto; }
+    .wheel { width:300px; height:300px; border-radius:50%; background:orange; margin:0 auto; position:relative; overflow:hidden; }
+    .spin-btn { margin-top:20px; padding:12px 24px; background:#ff5722; color:white; border:none; border-radius:30px; font-size:16px; cursor:pointer; }
+  </style>
+</head>
+<body>
+
+<div class="navbar">
+  <div class="logo" onclick="location.href='index.html'">🍜 校园美食墙</div>
+</div>
+
+<div class="turntable-box">
+  <h2>今天吃什么？</h2>
+  <div class="wheel"></div>
+  <button class="spin-btn" onclick="alert('随机结果：香辣牛肉饭！')">开始抽签</button>
+</div>
+
+</body>
+</html>

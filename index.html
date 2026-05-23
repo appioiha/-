@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>校园美食分享平台</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="utils.js"></script>
+</head>
+<body>
+<div class="navbar">
+  <div class="logo" onclick="location.href='index.html'">🍜 校园美食墙</div>
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="搜索食堂/菜品/关键词">
+    <button id="searchBtn">搜索</button>
+  </div>
+  <div class="nav-buttons">
+    <button class="btn publish-btn" onclick="location.href='publish.html'">+ 发布打卡</button>
+    <button class="btn login-btn" onclick="location.href='turntable.html'">🎡 吃啥转盘</button>
+    <button class="btn login-btn" onclick="location.href='personal.html'">👤 个人中心</button>
+    <button class="btn login-btn" onclick="location.href='login.html'">登录 / 注册</button>
+  </div>
+</div>
+
+<div class="container">
+  <div class="tabs">
+    <span class="tab active">全部</span>
+    <span class="tab">文科食堂</span>
+    <span class="tab">理科食堂</span>
+    <span class="tab">美食推荐</span>
+    <span class="tab">热门打卡</span>
+  </div>
+  <div class="card-list" id="cardList"></div>
+</div>
+
+<div class="footer">校园美食分享平台 © 2025</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const posts = DataUtil.getPosts();
+  const list = document.getElementById('cardList');
+  const searchInput = document.getElementById('searchInput');
+  const searchBtn = document.getElementById('searchBtn');
+
+  // 渲染帖子
+  function renderPosts(postList) {
+    if (postList.length === 0) {
+      list.innerHTML = '<div style="text-align:center;width:100%;color:#999;padding:40px;">没有找到相关内容~</div>';
+    } else {
+      list.innerHTML = postList.map(p => `
+        <div class="food-card">
+          <img src="${p.images[0]}" class="card-img">
+          <div class="card-body">
+            <h3>${p.dishName}</h3>
+            <p>${p.canteen} · ⭐ ${p.score}</p>
+            <p class="desc">${p.content}</p>
+            <button class="detail-btn" onclick="location.href='detail.html?id=${p.id}'">查看详情</button>
+          </div>
+        </div>
+      `).join('');
+    }
+  }
+
+  // 初始加载全部
+  renderPosts(posts);
+
+  // 模糊搜索
+  function doSearch() {
+    const keyword = searchInput.value.trim().toLowerCase();
+    if (!keyword) {
+      renderPosts(posts);
+      return;
+    }
+
+    const result = posts.filter(item => {
+      return item.canteen.toLowerCase().includes(keyword) ||
+             item.dishName.toLowerCase().includes(keyword) ||
+             item.content.toLowerCase().includes(keyword);
+    });
+    renderPosts(result);
+  }
+
+  // 绑定搜索
+  searchBtn.addEventListener('click', doSearch);
+  searchInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doSearch();
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>注册</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="utils.js"></script>
+  <style>
+    .reg-box { max-width: 400px; margin: 60px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 20px #00000010; }
+    .reg-box h2 { text-align: center; margin-bottom: 24px; color: #ff5722; }
+    .input-item { margin-bottom: 18px; }
+    .input-item label { display: block; margin-bottom: 6px; font-size:14px; }
+    .input-item input { width:100%; padding:10px; border:1px solid #ddd; border-radius:6px; }
+    .reg-btn { width:100%; background:#ff5722; color:white; padding:11px; border:none; border-radius:6px; cursor:pointer; }
+  </style>
+</head>
+<body>
+<div class="navbar">
+  <div class="logo" onclick="location.href='index.html'">🍜 校园美食墙</div>
+  <div class="nav-buttons">
+    <button class="btn login-btn" onclick="location.href='login.html'">登录</button>
+  </div>
+</div>
+
+<div class="reg-box">
+  <h2>用户注册</h2>
+  <div class="input-item">
+    <label>用户名</label>
+    <input type="text" id="regUsername" placeholder="请输入用户名">
+  </div>
+  <div class="input-item">
+    <label>密码</label>
+    <input type="password" id="regPassword" placeholder="请输入密码">
+  </div>
+  <div class="input-item">
+    <label>昵称</label>
+    <input type="text" id="regNickname" placeholder="请输入昵称">
+  </div>
+  <div class="input-item">
+    <label>学号</label>
+    <input type="text" id="regStudentId" placeholder="请输入学号">
+  </div>
+  <button class="reg-btn" onclick="doRegister()">注册</button>
+  <div style="text-align:center;margin-top:14px;font-size:13px;">已有账号？<a href="login.html" style="color:#ff5722">立即登录</a></div>
+</div>
+
+<script>
+function doRegister() {
+  const username = document.getElementById('regUsername').value.trim();
+  const password = document.getElementById('regPassword').value.trim();
+  const nickname = document.getElementById('regNickname').value.trim();
+  const studentId = document.getElementById('regStudentId').value.trim();
+
+  if (!username || !password || !nickname || !studentId) {
+    alert('请填写完整信息！');
+    return;
+  }
+  if (DataUtil.findUser(username)) {
+    alert('用户名已存在！');
+    return;
+  }
+  DataUtil.saveUser({
+    username, password, nickname, studentId
+  });
+  alert('注册成功！请登录');
+  location.href = 'login.html';
+}
+</script>
+</body>
+</html>

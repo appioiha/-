@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的发布</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="utils.js"></script>
+  <style>
+    .back-btn { position:absolute; top:20px; left:20px; padding:8px 16px; background:#f1f1f1; border:none; border-radius:6px; cursor:pointer; }
+    h2 { text-align:center; margin:40px 0 20px; color:#ff5722; }
+    .empty { text-align:center; color:#999; padding:40px; }
+  </style>
+</head>
+<body>
+<button class="back-btn" onclick="location.href='personal.html'">← 返回</button>
+<div class="container">
+  <h2>我的发布</h2>
+  <div class="card-list" id="cardList"></div>
+</div>
+
+<script>
+const user = DataUtil.getCurrentUser();
+if (!user) {
+  alert('请先登录！');
+  location.href = 'login.html';
+} else {
+  const posts = DataUtil.getPosts().filter(p => p.userId === user.username);
+  const list = document.getElementById('cardList');
+  if (posts.length === 0) {
+    list.innerHTML = '<div class="empty">你还没有发布任何打卡~</div>';
+  } else {
+    posts.forEach((p, i) => {
+      list.innerHTML += `
+      <div class="food-card">
+        <img src="${p.image}" class="card-img">
+        <div class="card-body">
+          <h3>${p.dishName}</h3>
+          <p>${p.canteen} · ⭐ ${p.score}</p>
+          <p class="desc">${p.content}</p>
+          <button class="detail-btn" onclick="alert('功能开发中')">查看详情</button>
+        </div>
+      </div>`;
+    });
+  }
+}
+</script>
+</body>
+</html>

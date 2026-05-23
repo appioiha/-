@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>美食详情</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="utils.js"></script>
+  <style>
+    .back-btn { position:fixed; top:20px; left:20px; padding:8px 16px; background:#f1f1f1; border:none; border-radius:6px; cursor:pointer; z-index:999; }
+    .detail-container { max-width:700px; margin:40px auto; background:white; border-radius:12px; overflow:hidden; box-shadow:0 2px 10px rgba(0,0,0,0.05); }
+    .image-list { display:flex; overflow-x:auto; gap:8px; padding:10px; background:#f5f5f5; }
+    .image-list img { height:300px; border-radius:8px; object-fit:cover; }
+    .detail-content { padding:20px; }
+    .detail-title { font-size:22px; font-weight:bold; margin-bottom:8px; }
+    .detail-info { color:#666; margin-bottom:12px; }
+    .detail-rating { color:#ffb400; font-size:18px; margin-bottom:16px; }
+    .detail-desc { color:#444; line-height:1.6; margin-bottom:24px; }
+    .comment-section { border-top:1px solid #eee; padding-top:20px; }
+    .comment-title { font-size:18px; margin-bottom:16px; }
+    .comment-item { background:#f9f9f9; padding:12px; border-radius:8px; margin-bottom:10px; }
+    .comment-author { font-weight:bold; font-size:14px; margin-bottom:4px; }
+    .comment-text { font-size:14px; color:#555; }
+    .comment-input-box { display:flex; gap:10px; margin-top:16px; }
+    .comment-input { flex:1; padding:10px; border:1px solid #ddd; border-radius:6px; }
+    .comment-submit { padding:10px 16px; background:#ff5722; color:white; border:none; border-radius:6px; cursor:pointer; }
+  </style>
+</head>
+<body>
+
+<button class="back-btn" onclick="location.href='index.html'">← 返回主页</button>
+<div class="detail-container" id="detailContainer"></div>
+
+<script>
+const params = new URLSearchParams(location.search);
+const postId = parseInt(params.get('id'));
+if (!postId) { alert('非法访问'); location.href='index.html'; }
+
+const posts = DataUtil.getPosts();
+const post = posts.find(p => p.id === postId);
+if (!post) { alert('帖子不存在'); location.href='index.html'; }
+
+const container = document.getElementById('detailContainer');
+container.innerHTML = `
+  <div class="image-list">
+    ${post.images.map(img => `<img src="${img}">`).join('')}
+  </div>
+  <div class="detail-content">
+    <div class="detail-title">${post.dishName}</div>
+    <div class="detail-info">${post.canteen} | 发布：${post.nickname}</div>
+    <div class="detail-rating">⭐ ${post.score} 分</div>
+    <div class="detail-desc">${post.content}</div>
+
+    <div class="comment-section">
+      <div class="comment-title">评论区</div>
+      <div id="commentList"></div>
+      <div class="comment-input-box">
+        <input class="comment-input" id="commentInput" placeholder="我来评！">
+        <button class="comment-submit" onclick="submitComment()">发送</button>
+      </div>
+    </div>
+  </div>
+`;
+
+function renderComments() {
+  const comments = DataUtil.getComments().filter(c => c.postId === postId);
+  const list = document.getElementById('commentList');
+  list.innerHTML = comments.length === 0
+    ? '<div style="color:#999;">暂无评论，快来抢沙发吧！</div>'
+    : comments.map(c => `
+      <div class="comment-item">
+        <div class="comment-author">${c.nickname}</div>
+        <div class="comment-text">${c.text}</div>
+      </div>
+    `).join('');
+}
+
+function submitComment() {
+  const user = DataUtil.getCurrentUser();
+  if (!user) { alert('请先登录！'); location.href='login.html'; return; }
+  const text = document.getElementById('commentInput').value.trim();
+  if (!text) { alert('请输入评论'); return; }
+
+  DataUtil.saveComment({
+    postId, userId: user.username, nickname: user.nickname, text
+  });
+
+  document.getElementById('commentInput').value = '';
+  renderComments();
+  alert('评论成功！');
+}
+
+renderComments();
+</script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>发布打卡</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="utils.js"></script>
+  <style>
+    .publish-box { max-width:600px; margin:40px auto; background:white; padding:30px; border-radius:12px; }
+    .form-item { margin-bottom:20px; }
+    .form-item label { display:block; margin-bottom:8px; font-weight:bold; }
+    input, select, textarea { width:100%; padding:10px; border:1px solid #ddd; border-radius:6px; }
+    textarea { height:100px; }
+    .submit-btn { background:#ff5722; color:white; padding:12px 24px; border:none; border-radius:6px; cursor:pointer; }
+    .preview-imgs { display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; }
+    .preview-imgs img { width:80px; height:80px; object-fit:cover; border-radius:4px; }
+  </style>
+</head>
+<body>
+<div class="navbar">
+  <div class="logo" onclick="location.href='index.html'">🍜 校园美食墙</div>
+  <div class="nav-buttons">
+    <button class="btn login-btn" onclick="location.href='personal.html'">个人中心</button>
+  </div>
+</div>
+
+<div class="publish-box">
+  <h2 style="margin-bottom:20px;">发布美食打卡</h2>
+  <div class="form-item">
+    <label>食堂</label>
+    <input id="canteen" placeholder="例如：一食堂二楼">
+  </div>
+  <div class="form-item">
+    <label>菜品名称</label>
+    <input id="dishName" placeholder="请输入菜品">
+  </div>
+  <div class="form-item">
+    <label>评分</label>
+    <select id="score">
+      <option>5</option><option>4</option><option>3</option><option>2</option><option>1</option>
+    </select>
+  </div>
+  <div class="form-item">
+    <label>评价内容</label>
+    <textarea id="content"></textarea>
+  </div>
+  <div class="form-item">
+    <label>上传图片（最多 9 张）</label>
+    <input type="file" id="imgInput" multiple accept="image/*" onchange="previewImgs()">
+    <div class="preview-imgs" id="previewImgs"></div>
+  </div>
+  <button class="submit-btn" onclick="doPublish()">发布打卡</button>
+</div>
+
+<script>
+let selectedImages = [];
+
+function previewImgs() {
+  const input = document.getElementById('imgInput');
+  const previewBox = document.getElementById('previewImgs');
+  previewBox.innerHTML = '';
+  selectedImages = [];
+
+  const files = input.files;
+  if (files.length > 9) {
+    alert('最多上传9张图片！');
+    input.value = '';
+    return;
+  }
+
+  for (let file of files) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      selectedImages.push(e.target.result);
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      previewBox.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+function doPublish() {
+  const user = DataUtil.getCurrentUser();
+  if (!user) {
+    alert('请先登录！');
+    location.href = 'login.html';
+    return;
+  }
+
+  const canteen = document.getElementById('canteen').value.trim();
+  const dishName = document.getElementById('dishName').value.trim();
+  const score = document.getElementById('score').value;
+  const content = document.getElementById('content').value.trim();
+
+  if (!canteen || !dishName || !content) {
+    alert('请填写完整信息！');
+    return;
+  }
+
+  if (selectedImages.length === 0) {
+    selectedImages = [`https://picsum.photos/seed/${Date.now()}/300/200`];
+  }
+
+  const post = {
+    id: Date.now(),
+    userId: user.username,
+    nickname: user.nickname,
+    canteen, dishName, score, content,
+    images: selectedImages
+  };
+
+  DataUtil.savePost(post);
+  alert('发布成功！');
+  location.href = 'index.html';
+}
+</script>
+</body>
+</html>
